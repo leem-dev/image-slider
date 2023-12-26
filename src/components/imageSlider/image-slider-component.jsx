@@ -1,54 +1,39 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import images from "../../images/images";
+import { faArrowAltCircleRight, faArrowAltCircleLeft } from "react-icons/fa";
 
-const landScapeImages = [];
+const ImageSlider = ({ slides }) => {
+  const [img, setImg] = useState(0);
+  const length = slides.length;
 
-const delayTimer = 1500;
-
-const ImageSlider = () => {
-  const [index, setIndex] = useState(0);
-  const timerRef = useRef(null);
-
-  const resetTimer = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
+  const nextSlideImage = () => {
+    setImg(img === length - 1 ? 0 : img + 1);
   };
 
-  useEffect(() => {
-    resetTimer();
-    timerRef.current = setTimeout(() => {
-      setIndex((prevIndex) => {
-        return prevIndex === landScapeImages.length - 1 ? 0 : prevIndex + 1;
-      });
-    }, delayTimer);
+  const prevSlideImage = () => {
+    setImg(img === 0 ? length - 1 : img - 1);
+  };
 
-    return () => {
-      resetTimer();
-    };
-  }, [index]);
+  if (!Array.isArray(slides) || slides.length <= 0) return null;
 
   return (
-    <div className="slideshow">
-      <div className="slideshowSlider">
-        {landScapeImages.map((backgroundImg, index) => (
-          <div className="slide" key={index}>
-            {backgroundImg}
-          </div>
-        ))}
-      </div>
+    <section className="slideshow">
+      <faArrowAltCircleLeft className="left-arrow" onClick={prevSlideImage} />
+      <faArrowAltCircleRight className="right-arrow" onClick={nextSlideImage} />
 
-      <div className="slideshowDots">
-        {landScapeImages.map((_, idx) => (
+      {images.map((slide, index) => {
+        return (
           <div
-            key={idx}
-            className={`slideshowDot${index === idx ? " active" : ""}`}
-            onClick={() => {
-              setIndex(idx);
-            }}
-          ></div>
-        ))}
-      </div>
-    </div>
+            className={index.id === img ? "slide active" : "slide"}
+            key={index.id}
+          >
+            {index.id === img && (
+              <img src={slide.src} alt={slide.description} className="image" />
+            )}
+          </div>
+        );
+      })}
+    </section>
   );
 };
 
