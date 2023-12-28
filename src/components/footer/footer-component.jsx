@@ -1,9 +1,25 @@
+import React from "react";
+import { Box, Flex } from "@chakra-ui/react";
+
 const Footer = () => {
   return (
-    <div>
-      <h3>Hi, Im the image slider folder</h3>
-    </div>
+    <Box backgroundColor="#18181b">
+      <footer>
+        <Flex
+          margin="0 auto"
+          px={12}
+          color="white"
+          justifyContent="center"
+          alignItems="center"
+          maxWidth="1024px"
+          height={14}
+        >
+          <p className="footerText" style={{ textTransform: "uppercase" }}>
+            Leem • © 2023
+          </p>
+        </Flex>
+      </footer>
+    </Box>
   );
 };
-
 export default Footer;
