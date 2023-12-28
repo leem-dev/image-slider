@@ -1,39 +1,83 @@
-import { useState } from "react";
-import images from "../../images/images";
-import { faArrowAltCircleRight, faArrowAltCircleLeft } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { Images } from "../../images/images";
 
-const ImageSlider = ({ slides }) => {
-  const [img, setImg] = useState(0);
-  const length = slides.length;
+const delayTimer = 2500;
 
-  const nextSlideImage = () => {
-    setImg(img === length - 1 ? 0 : img + 1);
+const ImageSlider = () => {
+  const [current, setCurrent] = useState(0);
+  const [isVisible, setVisible] = useState(false);
+  const timeoutRef = useRef(null);
+
+  const resetTimeout = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   };
 
-  const prevSlideImage = () => {
-    setImg(img === 0 ? length - 1 : img - 1);
-  };
-
-  if (!Array.isArray(slides) || slides.length <= 0) return null;
+  useEffect(() => {
+    resetTimeout();
+    timeoutRef.current = setTimeout(
+      () =>
+        setCurrent((prevCur) =>
+          prevCur === Images.length - 1 ? 0 : prevCur + 1
+        ),
+      delayTimer
+    );
+    return () => {
+      resetTimeout();
+    };
+  }, [current]);
 
   return (
-    <section className="slideshow">
-      <faArrowAltCircleLeft className="left-arrow" onClick={prevSlideImage} />
-      <faArrowAltCircleRight className="right-arrow" onClick={nextSlideImage} />
-
-      {images.map((slide, index) => {
-        return (
+    <div className="slideshow">
+      <div
+        className="slideshowSlider"
+        style={{ transform: `translate3d(${-current * 100}%, 0, 0)` }}
+      >
+        {Images.map((img, index) => (
           <div
-            className={index.id === img ? "slide active" : "slide"}
-            key={index.id}
+            className="slideshowSliderContainer"
+            onMouseEnter={() => {
+              setVisible(true);
+            }}
+            onMouseLeave={() => {
+              setVisible(false);
+            }}
           >
-            {index.id === img && (
-              <img src={slide.src} alt={slide.description} className="image" />
+            <img
+              src={img.src}
+              className="slide"
+              key={index.id}
+              alt={img.description}
+            />
+            {isVisible && (
+              <div className="blurContainer show-container">
+                <p className="blur-title">{img.title}</p>
+                <a
+                  className="blur-link"
+                  href={img.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  click here for more...
+                </a>
+              </div>
             )}
           </div>
-        );
-      })}
-    </section>
+        ))}
+      </div>
+      <div className="slideshowDots">
+        {Images.map((_, idx) => (
+          <div
+            key={idx}
+            className={`slideshowDot${current === idx ? " active" : ""}`}
+            onClick={() => {
+              setCurrent(idx);
+            }}
+          ></div>
+        ))}
+      </div>
+    </div>
   );
 };
 
