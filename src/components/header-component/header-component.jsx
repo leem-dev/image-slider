@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
@@ -22,30 +22,8 @@ const socials = [
 ];
 
 const Header = () => {
-  const headerRef = useRef(null);
-  const [previousScroll, setPreviousScroll] = useState(0);
-  useEffect(() => {
-    const handleScroll = () => {
-      let currentScroll = window.scrollY;
-
-      if (currentScroll > previousScroll) {
-        headerRef.style.transform = "translateY(-200px)";
-      } else {
-        headerRef.style.transform = "translateY(0)";
-      }
-      setPreviousScroll(currentScroll);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [previousScroll]);
-
   return (
     <Box
-      ref={headerRef}
       position="fixed"
       top={0}
       left={0}
